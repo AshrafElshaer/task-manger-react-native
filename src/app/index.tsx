@@ -1,11 +1,18 @@
-import { Link } from "expo-router";
+import ThemeToggle from "@/components/theme-toggle";
+import {
+  Button,
+  buttonTextVariants,
+  buttonVariants,
+} from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { Link, useRouter } from "expo-router";
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Page() {
   return (
-    <View className="flex flex-1">
+    <View className="flex flex-1 bg-background">
       <Header />
       <Content />
       <Footer />
@@ -21,7 +28,7 @@ function Content() {
           <View className="flex flex-col items-center gap-4 text-center">
             <Text
               role="heading"
-              className="text-3xl text-center native:text-5xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl"
+              className="text-3xl text-foreground text-center native:text-5xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl"
             >
               Welcome to Project ACME
             </Text>
@@ -32,11 +39,12 @@ function Content() {
             <View className="gap-4">
               <Link
                 suppressHighlighting
-                className="flex h-9 items-center justify-center overflow-hidden rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-gray-50 web:shadow ios:shadow transition-colors hover:bg-gray-900/90 active:bg-gray-400/90 web:focus-visible:outline-none web:focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300"
+                className="flex h-9 items-center justify-center overflow-hidden rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium  web:shadow ios:shadow transition-colors  "
                 href="/"
               >
                 Explore
               </Link>
+              <ThemeToggle />
             </View>
           </View>
         </View>
@@ -47,19 +55,15 @@ function Content() {
 
 function Header() {
   const { top } = useSafeAreaInsets();
+  const router = useRouter();
   return (
-    <View style={{ paddingTop: top }}>
+    <View>
       <View className="px-4 lg:px-6 h-14 flex items-center flex-row justify-between ">
         <Link className="font-bold flex-1 items-center justify-center" href="/">
           ACME
         </Link>
         <View className="flex flex-row gap-4 sm:gap-6">
-          <Link
-            className="text-md font-medium hover:underline web:underline-offset-4"
-            href="/"
-          >
-            About
-          </Link>
+          <Link href="/about/">About</Link>
           <Link
             className="text-md font-medium hover:underline web:underline-offset-4"
             href="/"

@@ -16,6 +16,9 @@
       ]
     ],
     "name": "todo-react-native",
-    "slug": "todo-react-native"
+    "slug": "todo-react-native",
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
