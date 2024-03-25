@@ -1,19 +1,26 @@
-import ThemeToggle from "@/components/theme-toggle";
-import {
-  Button,
-  buttonTextVariants,
-  buttonVariants,
-} from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { Link, useRouter } from "expo-router";
 import React from "react";
+import SignoutButton from "@/components/signout-button";
+import ThemeToggle from "@/components/theme-toggle";
+
+import { Text } from "@/components/ui/text";
+
+import { useAuth } from "@/stores/auth";
+
+import { Link } from "expo-router";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Page() {
+  const session = useAuth((state) => state.session);
+
   return (
     <View className="flex flex-1 bg-background">
       <Header />
+      {session && (
+        <Text className="test-foreground text-center text-lg font-medium">
+          Welcome {session.user?.email}
+        </Text>
+      )}
       <Content />
       <Footer />
     </View>
@@ -44,6 +51,14 @@ function Content() {
               >
                 Explore
               </Link>
+              <Link
+                suppressHighlighting
+                className="flex h-9 items-center justify-center overflow-hidden rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium  web:shadow ios:shadow transition-colors  "
+                href="/auth/"
+              >
+                auth
+              </Link>
+              <SignoutButton />
               <ThemeToggle />
             </View>
           </View>
@@ -55,7 +70,7 @@ function Content() {
 
 function Header() {
   const { top } = useSafeAreaInsets();
-  const router = useRouter();
+
   return (
     <View>
       <View className="px-4 lg:px-6 h-14 flex items-center flex-row justify-between ">
@@ -63,7 +78,7 @@ function Header() {
           ACME
         </Link>
         <View className="flex flex-row gap-4 sm:gap-6">
-          <Link href="/about/">About</Link>
+          <Link href="/">About</Link>
           <Link
             className="text-md font-medium hover:underline web:underline-offset-4"
             href="/"

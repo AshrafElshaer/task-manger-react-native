@@ -1,7 +1,8 @@
 import type { Pressable, Text, View, ViewStyle } from "react-native";
 
 type ComponentPropsWithAsChild<T extends React.ElementType<any>> =
-  React.ComponentPropsWithoutRef<T> & { asChild?: boolean };
+  & React.ComponentPropsWithoutRef<T>
+  & { asChild?: boolean };
 
 type ViewRef = React.ElementRef<typeof View>;
 type PressableRef = React.ElementRef<typeof Pressable>;
@@ -71,7 +72,7 @@ interface PositionedContentProps {
    * Platform: WEB ONLY
    */
   onInteractOutside?: (
-    event: PointerDownOutsideEvent | FocusOutsideEvent
+    event: PointerDownOutsideEvent | FocusOutsideEvent,
   ) => void;
   /**
    * Platform: WEB ONLY
@@ -91,10 +92,24 @@ interface ForceMountable {
   forceMount?: true | undefined;
 }
 
+interface LabelRootProps {
+  children: React.ReactNode;
+  style?: ViewStyle;
+}
+
+interface LabelTextProps {
+  /**
+   * Equivalent to `id` so that the same value can be passed as `aria-labelledby` to the input element.
+   */
+  nativeID: string;
+}
+
 export type {
   ComponentPropsWithAsChild,
   ForceMountable,
   Insets,
+  LabelRootProps,
+  LabelTextProps,
   PositionedContentProps,
   PressableRef,
   SlottablePressableProps,

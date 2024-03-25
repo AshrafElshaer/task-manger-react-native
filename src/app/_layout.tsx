@@ -1,13 +1,16 @@
 import "../global.css";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Theme, ThemeProvider } from "@react-navigation/native";
-import { SplashScreen, Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import * as React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "@/stores/auth";
+import { Theme, ThemeProvider } from "@react-navigation/native";
+import { SplashScreen, Stack, useRouter } from "expo-router";
 import { Platform } from "react-native";
 import { NAV_THEME } from "@/lib/constants";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { supabase } from "@/lib/supabase/supabase";
+
+import { StatusBar } from "expo-status-bar";
 
 const LIGHT_THEME: Theme = {
   dark: false,
@@ -27,8 +30,10 @@ export {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const router = useRouter();
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  const setSession = useAuth((state) => state.setSession);
 
   React.useEffect(() => {
     (async () => {
@@ -55,6 +60,19 @@ export default function RootLayout() {
     });
   }, []);
 
+  React.useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.navigate("/auth/");
+      }
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
   if (!isColorSchemeLoaded) {
     return null;
   }
@@ -62,17 +80,28 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+
       <Stack>
         <Stack.Screen
           name="index"
           options={{
-            headerTitle: "ACME",
+            headerTitle: "Home",
+            headerBackButtonMenuEnabled: false,
           }}
         />
         <Stack.Screen
-          name="about/index"
+          name="onboarding/index"
           options={{
-            headerTitle: "About",
+            headerTitle: "Onboarding",
+          }}
+        />
+        <Stack.Screen
+          name="auth/index"
+          options={{
+            headerTitle: "Sign In",
+            headerBackButtonMenuEnabled: false,
+            headerBackVisible: false,
+            gestureEnabled: false,
           }}
         />
       </Stack>
