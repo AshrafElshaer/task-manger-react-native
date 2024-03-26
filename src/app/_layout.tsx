@@ -11,6 +11,18 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { supabase } from "@/lib/supabase/supabase";
 
 import { StatusBar } from "expo-status-bar";
+import NetInfo from "@react-native-community/netinfo";
+import {
+  onlineManager,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+
+onlineManager.setEventListener((setOnline) => {
+  return NetInfo.addEventListener((state) => {
+    setOnline(!!state.isConnected);
+  });
+});
 
 const LIGHT_THEME: Theme = {
   dark: false,
@@ -20,6 +32,7 @@ const DARK_THEME: Theme = {
   dark: true,
   colors: NAV_THEME.dark,
 };
+const queryClient = new QueryClient();
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -79,35 +92,37 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
 
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            headerTitle: "Home",
-            headerBackButtonMenuEnabled: false,
-          }}
-        />
-        <Stack.Screen
-          name="onboarding/index"
-          options={{
-            headerTitle: "Onboarding",
-            headerBackButtonMenuEnabled: false,
-            headerBackVisible: false,
-            gestureEnabled: false,
-          }}
-        />
-        <Stack.Screen
-          name="auth/index"
-          options={{
-            headerTitle: "Sign In",
-            headerBackButtonMenuEnabled: false,
-            headerBackVisible: false,
-            gestureEnabled: false,
-          }}
-        />
-      </Stack>
+        <Stack>
+          <Stack.Screen
+            name="index"
+            options={{
+              headerTitle: "Home",
+              headerBackButtonMenuEnabled: false,
+            }}
+          />
+          <Stack.Screen
+            name="onboarding/index"
+            options={{
+              headerTitle: "Onboarding",
+              headerBackButtonMenuEnabled: false,
+              headerBackVisible: false,
+              gestureEnabled: false,
+            }}
+          />
+          <Stack.Screen
+            name="auth/index"
+            options={{
+              headerTitle: "Sign In",
+              headerBackButtonMenuEnabled: false,
+              headerBackVisible: false,
+              gestureEnabled: false,
+            }}
+          />
+        </Stack>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

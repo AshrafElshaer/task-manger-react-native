@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "expo-router";
 import * as z from "zod";
 
 import { useForm, Controller, type SubmitErrorHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { supabase } from "@/lib/supabase/supabase";
+
 import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
 
 import {
   Keyboard,
@@ -20,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { Label } from "@/components/ui/label";
+import { signInWithEmail, signUpWithEmail } from "@/db/auth";
 
 const initState = z.object({
   email: z.string().email({
@@ -34,7 +36,26 @@ type FormValues = z.infer<typeof initState>;
 
 export default function Auth() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const signInMutation = useMutation({
+    mutationFn: signInWithEmail,
+    onSuccess() {
+      router.navigate("/");
+      resetForm();
+    },
+    onError(error, variables, context) {
+      Alert.alert(error.message);
+    },
+  });
+  const signUpMutation = useMutation({
+    mutationFn: signUpWithEmail,
+    onSuccess() {
+      router.navigate("/onboarding/");
+      resetForm();
+    },
+    onError(error, variables, context) {
+      Alert.alert(error.message);
+    },
+  });
   const {
     handleSubmit,
     control,
@@ -44,57 +65,13 @@ export default function Auth() {
     resolver: zodResolver(initState),
   });
 
-  async function signInWithEmail({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) {
-    setLoading(true);
-    const {
-      error,
-      data: { session },
-    } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) return Alert.alert(error.message);
-    if (session) router.navigate("/");
-
-    setLoading(false);
-  }
-
-  async function signUpWithEmail({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) {
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-    setLoading(false);
-    console.log({ error });
-    if (error) return Alert.alert(error.message);
-    if (session) router.navigate("/onboarding/");
-  }
-
   function onSubmit(data: FormValues, mode: "signIn" | "signUp") {
     const { email, password } = data;
     if (mode === "signIn") {
-      signInWithEmail({ email, password });
+      signInMutation.mutate({ email, password });
     } else {
-      signUpWithEmail({ email, password });
+      signUpMutation.mutate({ email, password });
     }
-    resetForm();
   }
   const onError: SubmitErrorHandler<FormValues> = (errors, e) => {
     return console.log(errors);
@@ -171,7 +148,7 @@ export default function Auth() {
             </View>
             <View className="py-2 mt-4">
               <Button
-                disabled={loading}
+                disabled={signInMutation.isPending || signUpMutation.isPending}
                 onPress={handleSubmit(
                   (data) => onSubmit(data, "signIn"),
                   onError
@@ -182,7 +159,7 @@ export default function Auth() {
             </View>
             <View className="py-2 mt-4">
               <Button
-                disabled={loading}
+                disabled={signInMutation.isPending || signUpMutation.isPending}
                 onPress={handleSubmit(
                   (data) => onSubmit(data, "signUp"),
                   onError

@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Text } from "@/components/ui/text";
+import { updateUserFullName } from "@/db/user";
 import { supabase } from "@/lib/supabase/supabase";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Loader } from "lucide-react-native";
 import { useEffect, useState } from "react";
@@ -10,26 +12,17 @@ import { View, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
 
 export default function OnboardingPage() {
   const [fullName, setFullName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
-
-  async function handleOnboarding() {
-    if (!fullName) {
-      return Alert.alert("Please enter your full name");
-    }
-    setIsLoading(true);
-    const { error } = await supabase.auth.updateUser({
-      data: {
-        full_name: fullName,
-      },
-    });
-    setIsLoading(false);
-    if (error) {
-      return Alert.alert(error.message);
-    }
-
-    router.navigate("/");
-  }
+  const updateUserFullNameMutaion = useMutation({
+    mutationFn: updateUserFullName,
+    onSuccess() {
+      router.navigate("/");
+    },
+    onError(error, variables, context) {
+      Alert.alert(error.message);
+    },
+  });
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -57,13 +50,13 @@ export default function OnboardingPage() {
           />
         </View>
         <Button
-          onPress={handleOnboarding}
+          onPress={() => updateUserFullNameMutaion.mutate({ fullName })}
           className="flex-row gap-4"
-          disabled={isLoading}
+          disabled={updateUserFullNameMutaion.isPending || !fullName}
         >
-          {isLoading ? (
+          {updateUserFullNameMutaion.isPending ? (
             <View className="animate-spin text-primary-foreground">
-              <Loader  color={"white"} size={16} />
+              <Loader color={"white"} size={16} />
             </View>
           ) : null}
 
