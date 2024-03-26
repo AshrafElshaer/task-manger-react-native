@@ -9,16 +9,18 @@ import { useAuth } from "@/stores/auth";
 import { Link } from "expo-router";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { supabase } from "@/lib/supabase/supabase";
 
 export default function Page() {
   const session = useAuth((state) => state.session);
+ 
 
   return (
     <View className="flex flex-1 bg-background">
       <Header />
       {session && (
         <Text className="test-foreground text-center text-lg font-medium">
-          Welcome {session.user?.email}
+          Welcome {session.user?.user_metadata.full_name}
         </Text>
       )}
       <Content />
@@ -54,9 +56,9 @@ function Content() {
               <Link
                 suppressHighlighting
                 className="flex h-9 items-center justify-center overflow-hidden rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-medium  web:shadow ios:shadow transition-colors  "
-                href="/auth/"
+                href="/onboarding/"
               >
-                auth
+                onboarding
               </Link>
               <SignoutButton />
               <ThemeToggle />

@@ -93,6 +93,9 @@ export default function RootLayout() {
           name="onboarding/index"
           options={{
             headerTitle: "Onboarding",
+            headerBackButtonMenuEnabled: false,
+            headerBackVisible: false,
+            gestureEnabled: false,
           }}
         />
         <Stack.Screen

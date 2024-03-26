@@ -81,10 +81,10 @@ export default function Auth() {
       email: email,
       password: password,
     });
-
-    if (error) Alert.alert(error.message);
-    if (session) router.navigate("/onboarding/");
     setLoading(false);
+    console.log({ error });
+    if (error) return Alert.alert(error.message);
+    if (session) router.navigate("/onboarding/");
   }
 
   function onSubmit(data: FormValues, mode: "signIn" | "signUp") {
