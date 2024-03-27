@@ -1,14 +1,15 @@
+import { useState } from "react";
+import { updateUserFullName } from "@/db/user";
+import { useRouter } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Text } from "@/components/ui/text";
-import { updateUserFullName } from "@/db/user";
-import { supabase } from "@/lib/supabase/supabase";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
-import { Loader } from "lucide-react-native";
-import { useEffect, useState } from "react";
+
 import { View, TouchableWithoutFeedback, Keyboard, Alert } from "react-native";
+import Icon from "@/components/icon";
 
 export default function OnboardingPage() {
   const [fullName, setFullName] = useState("");
@@ -56,7 +57,7 @@ export default function OnboardingPage() {
         >
           {updateUserFullNameMutaion.isPending ? (
             <View className="animate-spin text-primary-foreground">
-              <Loader color={"white"} size={16} />
+              <Icon name="Loader" size={16} />
             </View>
           ) : null}
 

@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "@/stores/auth";
 import { Theme, ThemeProvider } from "@react-navigation/native";
 import { SplashScreen, Stack, useRouter } from "expo-router";
-import { Platform } from "react-native";
+import { Platform, TouchableOpacity } from "react-native";
 import { NAV_THEME } from "@/lib/constants";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { supabase } from "@/lib/supabase/supabase";
@@ -17,6 +17,8 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import Icon from "@/components/icon";
+
 
 onlineManager.setEventListener((setOnline) => {
   return NetInfo.addEventListener((state) => {
@@ -101,6 +103,13 @@ export default function RootLayout() {
             options={{
               headerTitle: "Home",
               headerBackButtonMenuEnabled: false,
+              headerRight(props) {
+                return (
+                  <TouchableOpacity onPress={() => router.push("/settings/")}>
+                    <Icon name="Settings" size={20} />
+                  </TouchableOpacity>
+                );
+              },
             }}
           />
           <Stack.Screen
@@ -119,6 +128,17 @@ export default function RootLayout() {
               headerBackButtonMenuEnabled: false,
               headerBackVisible: false,
               gestureEnabled: false,
+            }}
+          />
+          <Stack.Screen
+            name="settings/index"
+            options={{
+              headerTitle: "Account",
+              headerLeft: () => (
+                <TouchableOpacity onPress={router.back}>
+                  <Icon name="ChevronLeft" size={24} />
+                </TouchableOpacity>
+              ),
             }}
           />
         </Stack>
