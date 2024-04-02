@@ -12,9 +12,17 @@ export default function SignoutButton() {
     });
   }
   return (
-    <Button variant="destructive" onPress={signOut} size="sm">
+    <Button
+      variant="destructive"
+      onPress={signOut}
+      size="default"
+      className="w-full"
+    >
       <Text
-        className={buttonTextVariants({ variant: "destructive", size: "sm" })}
+        className={buttonTextVariants({
+          variant: "destructive",
+          size: "default",
+        })}
       >
         Sign Out
       </Text>

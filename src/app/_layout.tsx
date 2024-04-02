@@ -9,6 +9,7 @@ import { Platform, TouchableOpacity } from "react-native";
 import { NAV_THEME } from "@/lib/constants";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { supabase } from "@/lib/supabase/supabase";
+            import { PortalHost } from "@/components/primitives/portal";
 
 import { StatusBar } from "expo-status-bar";
 import NetInfo from "@react-native-community/netinfo";
@@ -18,6 +19,8 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import Icon from "@/components/icon";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 
 onlineManager.setEventListener((setOnline) => {
@@ -34,7 +37,7 @@ const DARK_THEME: Theme = {
   dark: true,
   colors: NAV_THEME.dark,
 };
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -95,53 +98,70 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <QueryClientProvider client={queryClient}>
-        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{
-              headerTitle: "Home",
-              headerBackButtonMenuEnabled: false,
-              headerRight(props) {
-                return (
-                  <TouchableOpacity onPress={() => router.push("/settings/")}>
-                    <Icon name="Settings" size={20} />
-                  </TouchableOpacity>
-                );
-              },
-            }}
-          />
-          <Stack.Screen
-            name="onboarding/index"
-            options={{
-              headerTitle: "Onboarding",
-              headerBackButtonMenuEnabled: false,
-              headerBackVisible: false,
-              gestureEnabled: false,
-            }}
-          />
-          <Stack.Screen
-            name="auth/index"
-            options={{
-              headerTitle: "Sign In",
-              headerBackButtonMenuEnabled: false,
-              headerBackVisible: false,
-              gestureEnabled: false,
-            }}
-          />
-          <Stack.Screen
-            name="settings/index"
-            options={{
-              headerTitle: "Account",
-              headerLeft: () => (
-                <TouchableOpacity onPress={router.back}>
-                  <Icon name="ChevronLeft" size={24} />
-                </TouchableOpacity>
-              ),
-            }}
-          />
-        </Stack>
+        <GestureHandlerRootView>
+          <BottomSheetModalProvider>
+            <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+            <Stack>
+              <Stack.Screen
+                name="index"
+                options={{
+                  headerTitle: "Home",
+                  headerBackButtonMenuEnabled: false,
+                  headerRight(props) {
+                    return (
+                      <TouchableOpacity
+                        onPress={() => router.push("/settings/")}
+                      >
+                        <Icon name="Settings" size={20} />
+                      </TouchableOpacity>
+                    );
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="onboarding/index"
+                options={{
+                  headerTitle: "Onboarding",
+                  headerBackButtonMenuEnabled: false,
+                  headerBackVisible: false,
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="auth/index"
+                options={{
+                  headerTitle: "Sign In",
+                  headerBackButtonMenuEnabled: false,
+                  headerBackVisible: false,
+                  gestureEnabled: false,
+                }}
+              />
+              <Stack.Screen
+                name="settings/index"
+                options={{
+                  headerTitle: "Settings",
+                  headerLeft: () => (
+                    <TouchableOpacity onPress={router.back}>
+                      <Icon name="ChevronLeft" size={24} />
+                    </TouchableOpacity>
+                  ),
+                }}
+              />
+              <Stack.Screen
+                name="new-todo/index"
+                options={{
+                  headerTitle: "New Todo",
+                  headerLeft: () => (
+                    <TouchableOpacity onPress={router.back}>
+                      <Icon name="ChevronLeft" size={24} />
+                    </TouchableOpacity>
+                  ),
+                }}
+              />
+            </Stack>
+            <PortalHost />
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
       </QueryClientProvider>
     </ThemeProvider>
   );

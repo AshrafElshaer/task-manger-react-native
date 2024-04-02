@@ -6,10 +6,10 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from "react-native-reanimated";
-import * as SwitchPrimitives from "@/components/primitives/switch";
+import * as SwitchPrimitives from "../primitives/switch";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 const SwitchWeb = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,
@@ -52,7 +52,7 @@ const SwitchNative = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
 >(({ className, ...props }, ref) => {
   const { colorScheme } = useColorScheme();
-  const translateX = useDerivedValue(() => (props.checked ? 24 : 0));
+  const translateX = useDerivedValue(() => (props.checked ? 18 : 0));
   const animatedRootStyle = useAnimatedStyle(() => {
     return {
       backgroundColor: interpolateColor(
@@ -71,14 +71,13 @@ const SwitchNative = React.forwardRef<
     <Animated.View
       style={animatedRootStyle}
       className={cn(
-        "h-6 w-[46px] rounded-full",
+        "h-8 w-[46px] rounded-full",
         props.disabled && "opacity-50"
       )}
     >
       <SwitchPrimitives.Root
         className={cn(
-          "flex-row h-6 w-[46px] shrink-0 items-center rounded-full border-2 border-transparent",
-
+          "flex-row h-8 w-[46px] shrink-0 items-center rounded-full border-2 border-transparent",
           className
         )}
         {...props}
@@ -87,7 +86,7 @@ const SwitchNative = React.forwardRef<
         <Animated.View style={animatedThumbStyle}>
           <SwitchPrimitives.Thumb
             className={
-              "h-5 w-5 rounded-full bg-background shadow-md shadow-foreground/25 ring-0"
+              "h-7 w-7 rounded-full bg-background shadow-md shadow-foreground/25 ring-0"
             }
           />
         </Animated.View>

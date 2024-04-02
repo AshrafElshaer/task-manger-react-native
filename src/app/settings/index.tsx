@@ -1,3 +1,4 @@
+import SignoutButton from "@/components/signout-button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
@@ -19,6 +20,9 @@ export default function SettingPage() {
           onCheckedChange={toggleColorScheme}
           nativeID="airplane-mode"
         />
+      </View>
+      <View className="flex-row items-center justify-center gap-2 mt-auto mb-8">
+        <SignoutButton />
       </View>
     </View>
   );
